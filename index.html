@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<style>
+		body {
+			margin: 0;
+			background-color: #3f335e;
+			color: white;
+			font-family: sans-serif;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			text-align: center;
+			padding: 2rem;
+			box-sizing: border-box;
+		}
+
+		.shape {
+			background-color: #5d4b8c;
+			padding: 2rem;
+			border-radius: 1rem;
+			max-width: 90vw;
+			width: 600px;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+		}
+
+		.description {
+			color: black;
+			font-size: 1.1rem;
+			line-height: 1.6;
+			text-shadow: 2px 2px 0 #ffa800;
+			word-wrap: break-word;
+		}
+
+		h1 {
+			color: #ffa800;
+			font-size: 3rem;
+			text-decoration: underline;
+			text-shadow:
+				-2px -2px 0 #000,
+				 2px -2px 0 #000,
+				-2px  2px 0 #000,
+				 2px  2px 0 #000;
+			margin-bottom: 2rem;
+		}
+
+		p.status {
+			margin-top: 2rem;
+			font-style: italic;
+			color: #ffa800;
+			text-shadow:
+				-1px -1px 0 #000,
+				 1px -1px 0 #000,
+				-1px  1px 0 #000,
+				 1px  1px 0 #000;
+		}
+
+		.links {
+			margin-top: 2rem;
+		}
+
+		.links a {
+			color: #ffa800;
+			text-decoration: none;
+			margin: 0 1rem;
+			font-weight: bold;
+			text-shadow:
+				-1px -1px 0 #000,
+				 1px -1px 0 #000,
+				-1px  1px 0 #000,
+				 1px  1px 0 #000;
+		}
+
+		.links a:hover {
+			text-decoration: underline;
+		}
+
+		@media (max-width: 480px) {
+			body {
+				padding: 1rem;
+			}
+			.shape {
+				width: 100%;
+				padding: 1rem;
+				border-radius: 0.75rem;
+			}
+			h1 {
+				font-size: 2rem;
+				margin-bottom: 1.5rem;
+			}
+			.description {
+				font-size: 1rem;
+				line-height: 1.4;
+			}
+			p.status {
+				font-size: 0.9rem;
+				margin-top: 1.5rem;
+			}
+			.links {
+				margin-top: 1.5rem;
+			}
+			.links a {
+				margin: 0 0.5rem;
+				font-size: 0.9rem;
+			}
+			#countdown {
+				font-size: 0.75rem;
+				color: #2f274d;
+				margin-top: 0.25rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h1>NearRaindrop116</h1>
+
+	<div class="shape">
+		<p class="description">
+			Hey, I'm Graham, known online as NearRaindrop116.
+			I'm a programmer who’s always experimenting with ideas, especially in game development.
+			I like building things that are a little offbeat, a little strange, and sometimes a bit too ambitious.
+			I'm not afraid to get scrappy with code and throw things together to see what works.
+			It’s not always clean, but it’s always mine - until it's not!
+		</p>
+	</div>
+
+	<div style="line-height: 1; margin-top: 2rem;">
+		<p id="status-text" class="status">I'm Currently Loading</p>
+		<small id="countdown" style="color: #2f274d; display: block;">Refreshing in 10s…</small>
+	</div>
+	
+	<script>
+	const userId = '1012815209305485382';
+	const statusElement = document.getElementById('status-text');
+	const countdownElement = document.getElementById('countdown');
+
+	let refreshIn = 10;
+
+	async function updateStatus() {
+		try {
+			const res = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+			const data = await res.json();
+			if (!data.success || !statusElement) return;
+
+			const presence = data.data.discord_status;
+			const text = {
+				online: "I'm Currently Online",
+				idle: "I'm Currently Away",
+				dnd: "Im Currently Unavalible",
+				offline: "I'm Currently Offline"
+			};
+			statusElement.textContent = text[presence] || "Status Unknown";
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
+	function countdownTick() {
+		refreshIn--;
+		if (countdownElement) {
+			countdownElement.textContent = `Refreshing in ${refreshIn}s…`;
+		}
+		if (refreshIn <= 0) {
+			refreshIn = 10;
+			updateStatus();
+		}
+	}
+
+	updateStatus(); // initial call
+	setInterval(countdownTick, 1000); // 1s tick
+	</script>
+
+	<div class="links">
+		<a href="https://youtube.com/@nearraindrop116" target="_blank">YouTube</a>
+		<a href="mailto:graham@ashby.cc">Email</a>
+		<a href="https://x.com/NearRaindrop116" target="_blank">X (Twitter)</a>
+		<a href="https://nearraindrop116.itch.io/" target="_blank">Itch.io</a>
+	</div>
+</body>
+</html>
