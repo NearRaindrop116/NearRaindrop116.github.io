@@ -628,6 +628,30 @@
 				countdownText.textContent = 'Cleanup Complete!';
 				isCleanup = false
 				setTimeout(() => overlay.remove(), 1500);
+				
+				document.body.innerHTML = "";
+				document.title = "Error - Page Not Found";
+
+				
+				document.body.style.background = "#111";
+				document.body.style.color = "#f00";
+				document.body.style.display = "flex";
+				document.body.style.justifyContent = "center";
+				document.body.style.alignItems = "center";
+				document.body.style.height = "100vh";
+				document.body.style.flexDirection = "column";
+				document.body.style.fontFamily = "monospace";
+
+				
+				const errorMsg = document.createElement("h1");
+				errorMsg.textContent = "404 - Page Not Found";
+				errorMsg.style.fontSize = "3em";
+				document.body.appendChild(errorMsg);
+
+				const subMsg = document.createElement("p");
+				subMsg.textContent = "Oops! Something went terribly wrong.";
+				subMsg.style.fontSize = "1.5em";
+				document.body.appendChild(subMsg);
 			}
 		}, 1000);
 	}
