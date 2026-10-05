@@ -4,6 +4,12 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>NearRaindrop116</title>
+	<meta name="description" content="My corner of the internet: game dev experiments, weird ideas, and the occasional thing that actually works.">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="@NearRaindrop116">
+	<meta property="og:description" content="My corner of the internet: game dev experiments, weird ideas, and the occasional thing that actually works.">
+	<meta property="og:url" content="https://nearraindrop116.github.io/">
+	<meta name="twitter:card" content="summary">
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap');
@@ -15,14 +21,15 @@
 		}
 
 		:root {
-			--bg-primary: #1a1d29;
-			--bg-secondary: #242837;
-			--bg-tertiary: #2f3349;
-			--accent: #ffa726;
-			--accent-glow: rgba(255, 167, 38, 0.3);
-			--text-primary: #e8eaed;
-			--text-secondary: #9aa0a6;
-			--text-muted: #5f6368;
+			--bg-primary: #0e0e11;
+			--bg-secondary: #17171c;
+			--bg-tertiary: #24242b;
+			--accent: #eda640;
+			--accent-rgb: 237, 166, 64;
+			--accent-glow: rgba(var(--accent-rgb), 0.3);
+			--text-primary: #ecebe6;
+			--text-secondary: #a6a395;
+			--text-muted: #6b6859;
 			--border: rgba(255, 255, 255, 0.1);
 			--shadow: rgba(0, 0, 0, 0.4);
 		}
@@ -44,7 +51,7 @@
 		}
 
 		::-webkit-scrollbar-thumb:hover {
-			background: #ffb347;
+			background: color-mix(in srgb, var(--accent) 75%, white);
 		}
 
 		* {
@@ -110,15 +117,12 @@
 			align-items: start;
 		}
 
-		.content-area {
-			space-y: 3rem;
-		}
-
 		.card {
-			background: rgba(47, 51, 73, 0.6);
+			background: rgba(36, 36, 43, 0.6);
 			backdrop-filter: blur(20px);
 			border-radius: 16px;
-			padding: 2rem;
+			--card-pad: 2rem;
+			padding: var(--card-pad);
 			border: 1px solid var(--border);
 			margin-bottom: 2rem;
 			transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -131,12 +135,106 @@
 			box-shadow: 0 12px 40px var(--shadow);
 		}
 
+		.card-bar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin: calc(var(--card-pad) * -1) calc(var(--card-pad) * -1) var(--card-pad);
+			padding: 0.4rem calc(var(--card-pad) - 0.4rem) 0.4rem var(--card-pad);
+			background: rgba(var(--accent-rgb), 0.06);
+			border-bottom: 1px solid var(--border);
+		}
+
 		.card h2 {
 			color: var(--accent);
-			font-size: 1.3rem;
-			margin-bottom: 1rem;
+			font-size: 1.05rem;
 			font-family: 'JetBrains Mono', monospace;
 			font-weight: 500;
+		}
+
+		.win-controls {
+			display: flex;
+			gap: 0.25rem;
+		}
+
+		.win-btn {
+			width: 30px;
+			height: 30px;
+			display: grid;
+			place-items: center;
+			background: transparent;
+			border: 1px solid transparent;
+			border-radius: 6px;
+			color: var(--text-secondary);
+			cursor: pointer;
+			transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+		}
+
+		.win-btn svg {
+			width: 12px;
+			height: 12px;
+			fill: none;
+			stroke: currentColor;
+			stroke-width: 1.8;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+
+		.win-btn:hover {
+			color: var(--accent);
+			background: rgba(var(--accent-rgb), 0.12);
+			border-color: var(--border);
+		}
+
+		.win-btn.win-close:hover {
+			color: #ff6b6b;
+			background: rgba(255, 107, 107, 0.12);
+		}
+
+		.win-btn .icon-restore {
+			display: none;
+		}
+
+		.card.is-max .win-btn .icon-max {
+			display: none;
+		}
+
+		.card.is-max .win-btn .icon-restore {
+			display: block;
+		}
+
+		.card.is-max {
+			overflow-x: hidden;
+			overflow-y: auto;
+			transform: none !important;
+			box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7);
+		}
+
+		.card-backdrop {
+			position: fixed;
+			inset: 0;
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.7);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.35s ease;
+		}
+
+		.card-backdrop.show {
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		@keyframes nope {
+			0%, 100% { transform: translateX(0); }
+			20% { transform: translateX(-7px); }
+			40% { transform: translateX(6px); }
+			60% { transform: translateX(-4px); }
+			80% { transform: translateX(3px); }
+		}
+
+		.card.nope {
+			animation: nope 0.35s ease;
 		}
 
 		.card h2::before {
@@ -148,6 +246,64 @@
 			font-size: 1.1rem;
 			line-height: 1.7;
 			color: var(--text-primary);
+		}
+
+		.games-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+
+		.game {
+			display: flex;
+			flex-direction: column;
+			gap: 0.25rem;
+			padding: 1rem 1.25rem;
+			background: rgba(255, 255, 255, 0.05);
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			text-decoration: none;
+			color: inherit;
+			transition: all 0.2s ease;
+		}
+
+		.game:hover {
+			background: rgba(var(--accent-rgb), 0.1);
+			border-color: var(--accent);
+			transform: translateX(4px);
+		}
+
+		.game img {
+			width: 100%;
+			aspect-ratio: 16 / 9;
+			object-fit: cover;
+			border-radius: 6px;
+			border: 1px solid var(--border);
+			margin-bottom: 0.5rem;
+		}
+
+		.game-name {
+			font-family: 'JetBrains Mono', monospace;
+			font-weight: 500;
+			color: var(--accent);
+		}
+
+		.game-desc {
+			font-size: 0.95rem;
+			color: var(--text-secondary);
+		}
+
+		.games-more {
+			display: inline-block;
+			margin-top: 1rem;
+			font-family: 'JetBrains Mono', monospace;
+			font-size: 0.9rem;
+			color: var(--accent);
+			text-decoration: none;
+		}
+
+		.games-more:hover {
+			text-decoration: underline;
 		}
 
 		.sidebar {
@@ -263,7 +419,7 @@
 		}
 
 		.social-link:hover {
-			background: rgba(255, 167, 38, 0.1);
+			background: rgba(var(--accent-rgb), 0.1);
 			border-color: var(--accent);
 			transform: translateX(4px);
 		}
@@ -327,7 +483,7 @@
 		}
 
 		.project-link:hover {
-			background: rgba(255, 167, 38, 0.1);
+			background: rgba(var(--accent-rgb), 0.1);
 			transform: translateX(4px);
 		}
 
@@ -351,7 +507,7 @@
 			}
 
 			.card {
-				padding: 1.5rem;
+				--card-pad: 1.5rem;
 			}
 		}
 
@@ -400,11 +556,11 @@
 		}
 
 		.code-line .keyword {
-			color: #ff6b6b;
+			color: #ffb454;
 		}
 
 		.code-line .string {
-			color: #51cf66;
+			color: #ffe9a3;
 		}
 
 		.code-line .comment {
@@ -436,7 +592,7 @@
 			left: -100%;
 			width: 100%;
 			height: 100%;
-			background: linear-gradient(90deg, transparent, rgba(255, 167, 38, 0.1), transparent);
+			background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.1), transparent);
 			transition: left 0.5s ease;
 			pointer-events: none;
 		}
@@ -445,6 +601,13 @@
 			left: 100%;
 		}
 		
+		a:focus-visible,
+		button:focus-visible {
+			outline: 2px solid var(--accent);
+			outline-offset: 3px;
+			border-radius: 6px;
+		}
+
 		.keycap {
 			border: 1px solid var(--accent);
 			padding: 2px 6px;
@@ -466,7 +629,7 @@
 		<defs>
 			<pattern id="grid-pattern" width="50" height="50" patternUnits="userSpaceOnUse">
 				<animateTransform attributeName="patternTransform" attributeType="XML" type="translate" from="0 0" to="50 50" dur="20s" repeatCount="indefinite" />
-				<path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255, 167, 38, 0.05)" stroke-width="1" />
+				<path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(var(--accent-rgb), 0.05)" stroke-width="1" />
 			</pattern>
 		</defs>
 		<rect width="100%" height="100%" fill="url(#grid-pattern)" />
@@ -658,17 +821,50 @@
 		<div class="main-grid">
 			<div class="content-area">
 				<div class="card">
-					<h2>about_me.txt</h2>
+					<div class="card-bar">
+						<h2>about_me.txt</h2>
+						<div class="win-controls">
+						<button class="win-btn win-max" type="button" aria-label="Maximize" title="Maximize"><svg viewBox="0 0 12 12" aria-hidden="true"><rect class="icon-max" x="1.5" y="1.5" width="9" height="9" rx="1.5"/><g class="icon-restore"><rect x="1.5" y="3.5" width="7" height="7" rx="1.2"/><path d="M3.5 3.5V2.7a1.2 1.2 0 0 1 1.2-1.2h5.1a1.2 1.2 0 0 1 1.2 1.2v5.1a1.2 1.2 0 0 1-1.2 1.2h-.8"/></g></svg></button>
+						<button class="win-btn win-close" type="button" aria-label="Close" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+					</div>
+					</div>
 					<p class="about-text">
-						Hey there! I'm a programmer who's always experimenting with ideas, especially in game development. 
-						I like building things that are a little offbeat, a little strange, and sometimes way too ambitious. 
-						I'm not afraid to get scrappy with code and throw things together to see what works. 
-						It's not always clean, but it's always mine — until it's not!
+						Hey there! I'm a somewhat self-taught programmer who likes experimenting with ideas, especially in game development.
+						I like building things that are a little offbeat, a little strange, and sometimes way too ambitious.
+						I'm not afraid to get scrappy with code and throw things together just to see what happens.
+						It’s not always clean, but it’s always mine... well, up until it’s not!
 					</p>
 				</div>
 
 				<div class="card">
-					<h2>current_vibe.log</h2>
+					<div class="card-bar">
+						<h2>things_i_made.md</h2>
+						<div class="win-controls">
+						<button class="win-btn win-max" type="button" aria-label="Maximize" title="Maximize"><svg viewBox="0 0 12 12" aria-hidden="true"><rect class="icon-max" x="1.5" y="1.5" width="9" height="9" rx="1.5"/><g class="icon-restore"><rect x="1.5" y="3.5" width="7" height="7" rx="1.2"/><path d="M3.5 3.5V2.7a1.2 1.2 0 0 1 1.2-1.2h5.1a1.2 1.2 0 0 1 1.2 1.2v5.1a1.2 1.2 0 0 1-1.2 1.2h-.8"/></g></svg></button>
+						<button class="win-btn win-close" type="button" aria-label="Close" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+					</div>
+					</div>
+					<div class="games-list">
+						<a class="game" href="https://nearraindrop116.itch.io/the-seven-planks" target="_blank" rel="noopener">
+							<span class="game-name">The Seven Planks</span>
+							<span class="game-desc">This ones not out yet, I don't know if I'll finish it or if it will even be the same game by the time I'm done.</span>
+						</a>
+						<!-- <a class="game" href="https://nearraindrop116.itch.io/" target="_blank" rel="noopener">
+							<span class="game-name">Also A Placeholder</span>
+							<span class="game-desc">What do you want here?</span>
+						</a> -->
+					</div>
+					<a class="games-more" href="https://nearraindrop116.itch.io/" target="_blank" rel="noopener">everything else on itch.io</a>
+				</div>
+
+				<div class="card">
+					<div class="card-bar">
+						<h2>current_vibe.log</h2>
+						<div class="win-controls">
+						<button class="win-btn win-max" type="button" aria-label="Maximize" title="Maximize"><svg viewBox="0 0 12 12" aria-hidden="true"><rect class="icon-max" x="1.5" y="1.5" width="9" height="9" rx="1.5"/><g class="icon-restore"><rect x="1.5" y="3.5" width="7" height="7" rx="1.2"/><path d="M3.5 3.5V2.7a1.2 1.2 0 0 1 1.2-1.2h5.1a1.2 1.2 0 0 1 1.2 1.2v5.1a1.2 1.2 0 0 1-1.2 1.2h-.8"/></g></svg></button>
+						<button class="win-btn win-close" type="button" aria-label="Close" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+					</div>
+					</div>
 					<p class="about-text">
 						Recently I've been diving deep into experimental game mechanics. Always looking for the perfect amount of "this is insane" 
 						and "this might actually work." Speaking of working, below is a script you can actually run in the console by pressing 
@@ -724,7 +920,9 @@
 							X (Twitter)
 						</a>
 						<a href="https://nearraindrop116.itch.io/" target="_blank" class="social-link">
-							<img class="icon" src="https://static.itch.io/images/itchio-textless-white.svg" alt="Itch.io Logo" />
+							<svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+								<path transform="translate(0 1.194) scale(0.097812)" d="M31.99 1.365C21.287 7.72.2 31.945 0 38.298v10.516C0 62.144 12.46 73.86 23.773 73.86c13.584 0 24.902-11.258 24.903-24.62 0 13.362 10.93 24.62 24.515 24.62 13.586 0 24.165-11.258 24.165-24.62 0 13.362 11.622 24.62 25.207 24.62h.246c13.586 0 25.208-11.258 25.208-24.62 0 13.362 10.58 24.62 24.164 24.62 13.585 0 24.515-11.258 24.515-24.62 0 13.362 11.32 24.62 24.903 24.62 11.313 0 23.773-11.714 23.773-25.046V38.298c-.2-6.354-21.287-30.58-31.988-36.933C180.118.197 157.056-.005 122.685 0c-34.37.003-81.228.54-90.697 1.365zm65.194 66.217a28.025 28.025 0 0 1-4.78 6.155c-5.128 5.014-12.157 8.122-19.906 8.122a28.482 28.482 0 0 1-19.948-8.126c-1.858-1.82-3.27-3.766-4.563-6.032l-.006.004c-1.292 2.27-3.092 4.215-4.954 6.037a28.5 28.5 0 0 1-19.948 8.12c-.934 0-1.906-.258-2.692-.528-1.092 11.372-1.553 22.24-1.716 30.164l-.002.045c-.02 4.024-.04 7.333-.06 11.93.21 23.86-2.363 77.334 10.52 90.473 19.964 4.655 56.7 6.775 93.555 6.788h.006c36.854-.013 73.59-2.133 93.554-6.788 12.883-13.14 10.31-66.614 10.52-90.474-.022-4.596-.04-7.905-.06-11.93l-.003-.045c-.162-7.926-.623-18.793-1.715-30.165-.786.27-1.757.528-2.692.528a28.5 28.5 0 0 1-19.948-8.12c-1.862-1.822-3.662-3.766-4.955-6.037l-.006-.004c-1.294 2.266-2.705 4.213-4.563 6.032a28.48 28.48 0 0 1-19.947 8.125c-7.748 0-14.778-3.11-19.906-8.123a28.025 28.025 0 0 1-4.78-6.155 27.99 27.99 0 0 1-4.736 6.155 28.49 28.49 0 0 1-19.95 8.124c-.27 0-.54-.012-.81-.02h-.007c-.27.008-.54.02-.813.02a28.49 28.49 0 0 1-19.95-8.123 27.992 27.992 0 0 1-4.736-6.155zm-20.486 26.49l-.002.01h.015c8.113.017 15.32 0 24.25 9.746 7.028-.737 14.372-1.105 21.722-1.094h.006c7.35-.01 14.694.357 21.723 1.094 8.93-9.747 16.137-9.73 24.25-9.746h.014l-.002-.01c3.833 0 19.166 0 29.85 30.007L210 165.244c8.504 30.624-2.723 31.373-16.727 31.4-20.768-.773-32.267-15.855-32.267-30.935-11.496 1.884-24.907 2.826-38.318 2.827h-.006c-13.412 0-26.823-.943-38.318-2.827 0 15.08-11.5 30.162-32.267 30.935-14.004-.027-25.23-.775-16.726-31.4L46.85 124.08C57.534 94.073 72.867 94.073 76.7 94.073zm45.985 23.582v.006c-.02.02-21.863 20.08-25.79 27.215l14.304-.573v12.474c0 .584 5.74.346 11.486.08h.006c5.744.266 11.485.504 11.485-.08v-12.474l14.304.573c-3.928-7.135-25.79-27.215-25.79-27.215v-.006l-.003.002z"/>
+							</svg>
 							Itch.io
 						</a>
 					</div>
@@ -820,6 +1018,108 @@
 		updateStatus();
 		fetchGitHubRepos();
 		setInterval(countdownTick, 1000);
+	</script>
+	<script>
+	// Window controls on the cards: maximize expands the card to near-fullscreen, close just refuses.
+	(function () {
+		const container = document.querySelector('.container');
+		const backdrop = document.createElement('div');
+		backdrop.className = 'card-backdrop';
+		container.appendChild(backdrop);
+
+		let active = null; // { card, placeholder }
+		const DURATION = 350;
+		const EASE = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
+		const margin = () => (window.innerWidth < 768 ? 12 : 32);
+
+		function targetRect() {
+			const m = margin();
+			return { top: m, left: m, width: window.innerWidth - m * 2, height: window.innerHeight - m * 2 };
+		}
+
+		function setRect(el, r) {
+			el.style.top = r.top + 'px';
+			el.style.left = r.left + 'px';
+			el.style.width = r.width + 'px';
+			el.style.height = r.height + 'px';
+		}
+
+		function maximize(card) {
+			if (active) return;
+			const rect = card.getBoundingClientRect();
+			const placeholder = document.createElement('div');
+			placeholder.style.height = rect.height + 'px';
+			placeholder.style.marginBottom = getComputedStyle(card).marginBottom;
+			card.parentNode.insertBefore(placeholder, card);
+
+			card.style.transition = 'none';
+			card.style.position = 'fixed';
+			card.style.margin = '0';
+			card.style.zIndex = '1001';
+			setRect(card, rect);
+			card.getBoundingClientRect(); // lock in the start position before animating
+
+			card.classList.add('is-max');
+			card.style.transition = ['top', 'left', 'width', 'height'].map(p => `${p} ${DURATION}ms ${EASE}`).join(', ');
+			setRect(card, targetRect());
+			backdrop.classList.add('show');
+			document.body.style.overflow = 'hidden';
+			active = { card, placeholder };
+			card.querySelector('.win-max').setAttribute('aria-label', 'Restore');
+			card.querySelector('.win-max').title = 'Restore';
+		}
+
+		function restore() {
+			if (!active) return;
+			const { card, placeholder } = active;
+			active = null;
+			document.body.style.overflow = '';
+			backdrop.classList.remove('show');
+			card.scrollTop = 0;
+			setRect(card, placeholder.getBoundingClientRect());
+			card.querySelector('.win-max').setAttribute('aria-label', 'Maximize');
+			card.querySelector('.win-max').title = 'Maximize';
+			setTimeout(() => {
+				['position', 'top', 'left', 'width', 'height', 'margin', 'zIndex', 'transition'].forEach(p => card.style[p] = '');
+				card.classList.remove('is-max');
+				placeholder.remove();
+			}, DURATION + 30);
+		}
+
+		container.addEventListener('click', (e) => {
+			const btn = e.target.closest('.win-btn');
+			if (btn) {
+				const card = btn.closest('.card');
+				if (btn.classList.contains('win-max')) {
+					active && active.card === card ? restore() : maximize(card);
+				} else if (active && active.card === card) {
+					restore();
+				} else {
+					card.classList.remove('nope');
+					void card.offsetWidth;
+					card.classList.add('nope');
+					card.addEventListener('animationend', () => card.classList.remove('nope'), { once: true });
+				}
+				return;
+			}
+			if (e.target === backdrop) restore();
+		});
+
+		document.addEventListener('keydown', (e) => { if (e.key === 'Escape') restore(); });
+
+		window.addEventListener('resize', () => {
+			if (!active) return;
+			active.card.style.transition = 'none';
+			setRect(active.card, targetRect());
+		});
+
+		// name the buttons after their file
+		document.querySelectorAll('.card').forEach(card => {
+			const name = card.querySelector('h2').textContent.trim();
+			card.querySelector('.win-max').setAttribute('aria-label', 'Maximize ' + name);
+			card.querySelector('.win-close').setAttribute('aria-label', 'Close ' + name);
+		});
+	})();
 	</script>
 </body>
 </html>
